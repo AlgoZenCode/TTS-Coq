@@ -1,1 +1,21 @@
 
+version: "3.8"
+services:
+  coqui:
+    image: ghcr.io/coqui-ai/tts-server:latest
+    environment:
+      - TTS_MODEL_NAME=tts_models/en/ljspeech/tacotron2-DDC
+    ports:
+      - "5002:5002"
+
+  backend:
+    build: ./backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - COQUI_URL=http://coqui:5002
+      - CORS_ORIGINS=https://your-frontend.com
+    ports:
+      - "4000:4000"
+    depends_on:
+      - coqui
